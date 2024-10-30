@@ -1,5 +1,4 @@
-import time
-
+#quiz game
 questions = ("What is the integration of sin(x)",
             "What is biggest country in the world",
             "What is the anime that have the main character Erin Yeager ",
