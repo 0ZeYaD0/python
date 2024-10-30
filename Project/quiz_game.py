@@ -1,17 +1,17 @@
 #quiz game
-questions = ("What is the integration of sin(x)",
-            "What is biggest country in the world",
-            "What is the anime that have the main character Erin Yeager ",
-            "Who is the mother of programming langues",
-            "Where is the food pasta invented")
+questions = ("What is the integration of sin(x) ?",
+            "What is biggest country in the world ?",
+            "What is the anime that have the main character Erin Yeager ? ",
+            "Who is the mother of programming langues ?",
+            "Where did the food pasta invented ?")
 
 options = (("A.-sin(x) ","B.-cos(x) ","C.cos(x) ","D.tan(x)"),
           ("A.Russia","B.China","C.Usa","D.England"),
           ("A.One Punch man","B.Aot","C.Re.Zero","D.Akamiga kill"),
-          ("A.Python","B.Ruby","C.R","D.C"),
+          ("A.Python","B.Ruby","C.C","D.R"),
           ("A.Italy","B.Spain","C.Egypt","D.Sudan"))
 
-answers =("C","A","B","D","A")
+answers =("B","A","B","C","A")
 guesses = []
 score = 0
 question_num = 0
