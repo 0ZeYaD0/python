@@ -1,3 +1,7 @@
+import os
+
+os.system("cls")
+
 menu = {"pizza":5.00,
         "s popcorn": 2.50,
         "m popcorn": 3.50,
@@ -22,9 +26,10 @@ while True:
         break
     elif menu.get(food) is not None:
         cart.append(food)
-print("----------------- YOUR ORDER -----------------")
-for food in cart:
-    total += menu.get(food)
-    print(food,end=" ")
+if cart:
+    print("----------------- YOUR ORDER -----------------")
+    for food in cart:
+        total += menu.get(food)
+        print(food, end=" ")
 
 print(f"The total is: ${total:.2f} ")
