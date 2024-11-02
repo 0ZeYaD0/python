@@ -1,4 +1,7 @@
 import random
+import os
+
+os.system("cls")
 
 lowest_number =  1
 highest_number = 100
