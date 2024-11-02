@@ -3,7 +3,7 @@ questions = ("What is the integration of sin(x)",
             "What is biggest country in the world",
             "What is the anime that have the main character Erin Yeager ",
             "Who is the mother of programming langues",
-            "Where is the food pasta invented")
+            "Where did the food pasta invented")
 
 options = (("A.-sin(x) ","B.-cos(x) ","C.cos(x) ","D.tan(x)"),
           ("A.Russia","B.China","C.Usa","D.England"),
@@ -11,7 +11,7 @@ options = (("A.-sin(x) ","B.-cos(x) ","C.cos(x) ","D.tan(x)"),
           ("A.Python","B.Ruby","C.R","D.C"),
           ("A.Italy","B.Spain","C.Egypt","D.Sudan"))
 
-answers =("C","A","B","D","A")
+answers =("B","A","B","D","A")
 guesses = []
 score = 0
 question_num = 0
