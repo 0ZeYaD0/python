@@ -48,7 +48,7 @@ def withdraw():
 
         if owner_number in accounts and accounts[owner_number]['name'] == owner_name:
             amount_to_withdraw = int(input("Enter the amount you want to withdraw: "))
-            if amount_to_withdraw <= balances[owner_number]:
+            if amount_to_withdraw <= balances[owner_number] and amount_to_withdraw > 0:
                 balances[owner_number] -= amount_to_withdraw
                 print(f"Amount withdrawer  successfully! Your new balance is {balances[owner_number]:.2f}")
             else:
