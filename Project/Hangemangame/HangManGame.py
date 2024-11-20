@@ -2,8 +2,6 @@ import random
 import os
 from Wordlist import words
 
-os.system("cls")
-
 
 #The art of the hang man is a dictionary of (Key:Values)
 hang_man_art = {
@@ -46,6 +44,7 @@ def DisplayAnswer(answer):
     print(" ".join(answer))
 
 def main():
+    os.system("cls")
     answer = random.choice(words)
     hint = ["_"] * len(answer)
     wrong_guesses = 0
