@@ -42,7 +42,7 @@ class ToDo:
             return tasks
         with open(file_path, mode='r') as file:
             for line in file:
-                task, date, due_time, priority, is_done_str = line.strip().split(',')
+                task, date, due_time, priority, is_done_str = line.strip().split('|')
                 is_done = is_done_str == 'True'
                 tasks.append(ToDo(task, date, due_time, priority, is_done))
         return tasks
