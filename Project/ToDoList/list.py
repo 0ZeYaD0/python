@@ -1,6 +1,4 @@
 from enum import Enum
-from Project.alarm import set_alarm
-import csv
 
 file_path = 'list.txt'
 
