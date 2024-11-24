@@ -11,15 +11,36 @@ class ToDo:
         self.is_done = is_done
 
     def set_task(self):
-        self.task = input("Enter Task: ")
-        self.date = input("Enter Date (YYYY-MM-DD): ")
-        self.due_time = input("Enter Due Time (HH:MM): ")
+        while True:
+            self.task = input("Enter Task: ").strip()
+            if '|' in self.task:
+                print("Invalid character '|' in task. Please enter again.")
+            else:
+                break
+        while True:
+            self.date = input("Enter Date (YYYY-MM-DD): ").strip()
+            if '|' in self.date:
+                print("Invalid character '|' in date. Please enter again.")
+            else:
+                break
+        while True:
+            self.due_time = input("Enter Due Time (HH:MM): ").strip()
+            if '|' in self.due_time:
+                print("Invalid character '|' in due time. Please enter again.")
+            else:
+                break
 
     def set_priority(self):
-        self.priority = input("Enter priority (high, mid, low): ").strip().lower()
-        if self.priority not in ['high', 'mid', 'low']:
-            print("Invalid priority. Setting to 'low' by default.")
-            self.priority = 'low'
+        while True:
+            self.priority = input("Enter priority (high, mid, low): ").strip().lower()
+            if '|' in self.priority:
+                print("Invalid character '|' in priority. Please enter again.")
+            elif self.priority not in ['high', 'mid', 'low']:
+                print("Invalid priority. Setting to 'low' by default.")
+                self.priority = 'low'
+                break
+            else:
+                break
 
     def set_is_done(self):
         is_done_input = input(f'Is the task "{self.task}" done? (yes/no): ').strip().lower()
