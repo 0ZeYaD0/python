@@ -1,6 +1,6 @@
 import os
 
-file_path = 'tasks.txt'
+file_path = 'list.txt'
 
 class ToDo:
     def __init__(self, task=None, date=None, due_time=None, priority='low', is_done=None):
