@@ -118,10 +118,36 @@ class ToDo:
         except ValueError:
             print("Please enter a valid number.")
 
+    def edit_task(self):
+        tasks = ToDo.load_tasks_from_txt()
+        if not tasks:
+            print("No tasks found.")
+            return
+        
+        print("\nCurrent Tasks:")
+
+        idx = 1
+        for task in tasks:
+            print(f"{idx}. {task.task}")
+            idx += 1
+
+            task_number = int(input("\nEnter the number of the task to edit: "))
+            if 1 <= task_number <= len(tasks):
+                selected_task = tasks[task_number - 1]
+                new_message = input("Enter the new message: ")
+                if '|' in new_message:
+                    print("Invalid character '|' in task. Please enter again.")
+                    return
+                selected_task.task = new_message.strip()
+                ToDo.save_tasks_to_txt(tasks)
+                print(f"Task '{selected_task.task}' edited successfully.")
+            else:
+                print("Invalid task number.")
+
 def main():
     while True:
 
-        action = input("Enter a command (add, show, set, delete, quit): ").strip().lower()
+        action = input("Enter a command (add, show, edit, set, delete, quit): ").strip().lower()
 
         if action == 'add':
             task = ToDo()
@@ -142,6 +168,10 @@ def main():
                     idx += 1
             else:
                 print("No tasks found.")
+
+        elif action =='edit':
+            task = ToDo()
+            task.edit_task()
 
         elif action == 'set':
             ToDo.set_is_done()
