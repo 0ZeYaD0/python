@@ -42,10 +42,6 @@ class ToDo:
             else:
                 break
 
-    def set_is_done(self):
-        is_done_input = input(f'Is the task "{self.task}" done? (yes/no): ').strip().lower()
-        self.is_done = is_done_input == 'yes'
-
     def save_to_txt(self):
         with open(file_path, mode='a') as file:
             file.write(f"{self.task}|{self.date}|{self.due_time}|{self.priority}|{self.is_done}\n")
@@ -68,10 +64,6 @@ class ToDo:
                 tasks.append(ToDo(task, date, due_time, priority, is_done))
         return tasks
 
-    def print_to_do(self):
-        status = "Done" if self.is_done else "Not Done"
-        print(f"Task: {self.task}, Date: {self.date}, Due Time: {self.due_time}, Priority: {self.priority}, Status: {status}")
-
     @staticmethod
     def set_is_done():
         tasks = ToDo.load_tasks_from_txt()
@@ -85,6 +77,7 @@ class ToDo:
             status = "Done" if task.is_done else "Not Done"
             print(f"{idx}. {task.task} - {status}")
             idx += 1
+
         try:
             task_number = int(input("\nEnter the number of the task to toggle its status: "))
             if 1 <= task_number <= len(tasks):
@@ -97,9 +90,39 @@ class ToDo:
         except ValueError:
             print("Please enter a valid number.")
 
+    def print_to_do(self):
+        status = "Done" if self.is_done else "Not Done"
+        print(f"Task: {self.task}, Date: {self.date}, Due Time: {self.due_time}, Priority: {self.priority}, Status: {status}")
+
+    def delete_task(self):
+        tasks = ToDo.load_tasks_from_txt()
+        if not tasks:
+            print("No tasks found.")
+            return
+        
+        print("\nCurrent Tasks:")
+
+        idx = 1
+
+        for task in tasks:
+            print(f"{idx}. {task.task}")
+            idx += 1
+        try:
+            task_number = int(input("\nEnter the number of the task to delete: "))
+            if 1 <= task_number <= len(tasks):
+                selected_task = tasks.pop(task_number - 1)
+                ToDo.save_tasks_to_txt(tasks)
+                print(f"Task '{selected_task.task}' deleted successfully.")
+            else:
+                print("Invalid task number.")
+        except ValueError:
+            print("Please enter a valid number.")
+
 def main():
     while True:
-        action = input("\nEnter a command (add, show, set, quit): ").strip().lower()
+
+        action = input("Enter a command (add, show, set, delete, quit): ").strip().lower()
+
         if action == 'add':
             task = ToDo()
             task.set_task()
@@ -107,6 +130,7 @@ def main():
             task.is_done = False
             task.save_to_txt()
             print("Task added successfully.")
+
         elif action == 'show':
             tasks = ToDo.load_tasks_from_txt()
             if tasks:
@@ -118,8 +142,14 @@ def main():
                     idx += 1
             else:
                 print("No tasks found.")
+
         elif action == 'set':
             ToDo.set_is_done()
+
+        elif action == 'delete':
+            task = ToDo()
+            task.delete_task()
+
         elif action == 'quit':
             break
         else:
