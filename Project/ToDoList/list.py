@@ -1,4 +1,5 @@
 import os
+from memory_profiler import profile  
 
 file_path = 'list.txt'
 
@@ -107,6 +108,7 @@ class ToDo:
         for task in tasks:
             print(f"{idx}. {task.task}")
             idx += 1
+
         try:
             task_number = int(input("\nEnter the number of the task to delete: "))
             if 1 <= task_number <= len(tasks):
@@ -131,22 +133,23 @@ class ToDo:
             print(f"{idx}. {task.task}")
             idx += 1
 
-            task_number = int(input("\nEnter the number of the task to edit: "))
-            if 1 <= task_number <= len(tasks):
-                selected_task = tasks[task_number - 1]
-                new_message = input("Enter the new message: ")
-                if '|' in new_message:
-                    print("Invalid character '|' in task. Please enter again.")
-                    return
-                selected_task.task = new_message.strip()
-                ToDo.save_tasks_to_txt(tasks)
-                print(f"Task '{selected_task.task}' edited successfully.")
-            else:
-                print("Invalid task number.")
-
+        task_number = int(input("\nEnter the number of the task to edit: "))
+        if 1 <= task_number <= len(tasks):
+            selected_task = tasks[task_number - 1]
+            new_message = input("Enter the new message: ")
+            if '|' in new_message:
+                print("Invalid character '|' in task. Please enter again.")
+                return
+            selected_task.task = new_message.strip()
+            ToDo.save_tasks_to_txt(tasks)
+            print(f"Task '{selected_task.task}' edited successfully.")
+        else:
+            print("Invalid task number.")
+                
 def main():
+    os.system("cls")
+    
     while True:
-
         action = input("Enter a command (add, show, edit, set, delete, quit): ").strip().lower()
 
         if action == 'add':
