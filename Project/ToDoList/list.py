@@ -28,12 +28,12 @@ class ToDo:
                 except ValueError:
                     print("Invalid date format. Please enter date in YYYY-MM-DD format.")
         while True:
-            time_input = input("Enter Due Time (HH:MM): ").strip()
+            time_input = input("Enter Due Time (HH:MM:SS): ").strip()
             if '|' in time_input:
                 print("Invalid character '|' in due time. Please enter again.")
             else:
                 try:
-                    self.due_time = datetime.strptime(time_input, "%H:%M").time()
+                    self.due_time = datetime.strptime(time_input, "%H:%M:%S").time()
                     break
                 except ValueError:
                     print("Invalid time format. Please enter time in HH:MM format.")
@@ -52,7 +52,7 @@ class ToDo:
 
     def append_task_to_file(self):
         with open(file_path, mode='a') as file:
-            file.write(f"{self.task}|{self.date.strftime('%Y-%m-%d')}|{self.due_time.strftime('%H:%M')}|{self.priority}|{self.is_done}\n")
+            file.write(f"{self.task}|{self.date.strftime('%Y-%m-%d')}|{self.due_time.strftime('%H:%M:%S')}|{self.priority}|{self.is_done}\n")
 
     @staticmethod
     def save_tasks_to_txt(tasks):
@@ -69,11 +69,19 @@ class ToDo:
             return tasks
         with open(file_path, mode='r') as file:
             for line in file:
-                task_str, date_str, due_time_str, priority, is_done_str = line.strip().split('|')
-                is_done = is_done_str == 'True'
-                date = datetime.strptime(date_str, "%Y-%m-%d").date()
-                due_time = datetime.strptime(due_time_str, "%H:%M").time()
-                tasks.append(ToDo(task_str, date, due_time, priority, is_done))
+                parts = line.strip().split('|')
+                if len(parts) != 5:
+                    print(f"Skipping malformed line: {line.strip()}")
+                    continue
+                task_str, date_str, due_time_str, priority, is_done_str = parts
+                try:
+                    is_done = is_done_str == 'True'
+                    date = datetime.strptime(date_str, "%Y-%m-%d").date()
+                    due_time = datetime.strptime(due_time_str, "%H:%M:%S").time()
+                    tasks.append(ToDo(task_str, date, due_time, priority, is_done))
+                except ValueError as e:
+                    print(f"Error parsing line: {line.strip()}\n{e}")
+                    continue
         return tasks
 
     @staticmethod
@@ -156,12 +164,46 @@ class ToDo:
             print(f"Task '{selected_task.task}' edited successfully.")
         else:
             print("Invalid task number.")
-                
+
+    def edit_date(self):
+        tasks = ToDo.load_tasks_from_txt()
+        if not tasks:
+            print("No tasks found.")
+            return
+
+        print("\nCurrent Tasks:")
+        idx = 1
+        for task in tasks:
+            print(f"{idx}. {task.task} - Current Date: {task.date}")
+            idx += 1
+
+        try:
+            task_number = int(input("\nEnter the number of the task to edit the date: "))
+            if 1 <= task_number <= len(tasks):
+                selected_task = tasks[task_number - 1]
+                while True:
+                    new_date_input = input("Enter the new date (YYYY-MM-DD): ").strip()
+                    if '|' in new_date_input:
+                        print("Invalid character '|' in date. Please enter again.")
+                    else:
+                        try:
+                            new_date = datetime.strptime(new_date_input, "%Y-%m-%d").date()
+                            selected_task.date = new_date
+                            break
+                        except ValueError:
+                            print("Invalid date format. Please enter date in YYYY-MM-DD format.")
+                ToDo.save_tasks_to_txt(tasks)
+                print(f"Date for task '{selected_task.task}' updated successfully.")
+            else:
+                print("Invalid task number.")
+        except ValueError:
+            print("Please enter a valid number.")
+
 def main():
     os.system("cls")
     
     while True:
-        action = input("Enter a command (add, show, edit, set, delete, quit): ").strip().lower()
+        action = input("Enter a command (add, show, edit task, edit date, set, delete, quit): ").strip().lower()
 
         if action == 'add':
             task = ToDo()
@@ -185,10 +227,14 @@ def main():
             else:
                 print("No tasks found.")
 
-        elif action =='edit':
+        elif action =='edit task':
             task = ToDo()
             task.edit_task()
-            
+        
+        elif action == 'edit date':
+            task = ToDo()
+            task.edit_date()
+    
         elif action == 'set':
             ToDo.set_is_done()
 
