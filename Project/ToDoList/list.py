@@ -1,6 +1,5 @@
 import os
-from memory_profiler import profile  
-
+from datetime import datetime
 file_path = 'list.txt'
 
 class ToDo:
@@ -19,17 +18,25 @@ class ToDo:
             else:
                 break
         while True:
-            self.date = input("Enter Date (YYYY-MM-DD): ").strip()
-            if '|' in self.date:
+            date_input = input("Enter Date (YYYY-MM-DD): ").strip()
+            if '|' in date_input:
                 print("Invalid character '|' in date. Please enter again.")
             else:
-                break
+                try:
+                    self.date = datetime.strptime(date_input, "%Y-%m-%d").date()
+                    break
+                except ValueError:
+                    print("Invalid date format. Please enter date in YYYY-MM-DD format.")
         while True:
-            self.due_time = input("Enter Due Time (HH:MM): ").strip()
-            if '|' in self.due_time:
+            time_input = input("Enter Due Time (HH:MM): ").strip()
+            if '|' in time_input:
                 print("Invalid character '|' in due time. Please enter again.")
             else:
-                break
+                try:
+                    self.due_time = datetime.strptime(time_input, "%H:%M").time()
+                    break
+                except ValueError:
+                    print("Invalid time format. Please enter time in HH:MM format.")
 
     def set_priority(self):
         while True:
@@ -43,14 +50,16 @@ class ToDo:
             else:
                 break
 
-    def save_to_txt(self):
+    def append_task_to_file(self):
         with open(file_path, mode='a') as file:
-            file.write(f"{self.task}|{self.date}|{self.due_time}|{self.priority}|{self.is_done}\n")
+            file.write(f"{self.task}|{self.date.strftime('%Y-%m-%d')}|{self.due_time.strftime('%H:%M')}|{self.priority}|{self.is_done}\n")
 
     @staticmethod
     def save_tasks_to_txt(tasks):
+        priority_mapping = {'high': 1, 'mid': 2, 'low': 3}
+        tasks_sorted = sorted(tasks, key=lambda task: priority_mapping[task.priority])
         with open(file_path, mode='w') as file:
-            for task in tasks:
+            for task in tasks_sorted:
                 file.write(f"{task.task}|{task.date}|{task.due_time}|{task.priority}|{task.is_done}\n")
 
     @staticmethod
@@ -60,9 +69,11 @@ class ToDo:
             return tasks
         with open(file_path, mode='r') as file:
             for line in file:
-                task, date, due_time, priority, is_done_str = line.strip().split('|')
+                task_str, date_str, due_time_str, priority, is_done_str = line.strip().split('|')
                 is_done = is_done_str == 'True'
-                tasks.append(ToDo(task, date, due_time, priority, is_done))
+                date = datetime.strptime(date_str, "%Y-%m-%d").date()
+                due_time = datetime.strptime(due_time_str, "%H:%M").time()
+                tasks.append(ToDo(task_str, date, due_time, priority, is_done))
         return tasks
 
     @staticmethod
@@ -157,15 +168,17 @@ def main():
             task.set_task()
             task.set_priority()
             task.is_done = False
-            task.save_to_txt()
+            task.append_task_to_file()
             print("Task added successfully.")
 
         elif action == 'show':
             tasks = ToDo.load_tasks_from_txt()
             if tasks:
+                priority_mapping = {'high': 1, 'mid': 2, 'low': 3}
+                tasks_sorted = sorted(tasks, key=lambda task: priority_mapping[task.priority])
                 print("\nTask List:")
                 idx = 1
-                for task in tasks:
+                for task in tasks_sorted:
                     print(f"{idx}. ", end="")
                     task.print_to_do()
                     idx += 1
@@ -175,7 +188,7 @@ def main():
         elif action =='edit':
             task = ToDo()
             task.edit_task()
-
+            
         elif action == 'set':
             ToDo.set_is_done()
 
