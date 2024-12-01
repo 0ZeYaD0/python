@@ -1,5 +1,7 @@
 import os
 from datetime import datetime
+import psutil
+
 file_path = 'list.txt'
 
 class ToDo:
@@ -24,7 +26,10 @@ class ToDo:
             else:
                 try:
                     self.date = datetime.strptime(date_input, "%Y-%m-%d").date()
-                    break
+                    if self.date < datetime.now().date():
+                        print("Enter a valid date")
+                    else:
+                        break
                 except ValueError:
                     print("Invalid date format. Please enter date in YYYY-MM-DD format.")
         while True:
@@ -36,7 +41,7 @@ class ToDo:
                     self.due_time = datetime.strptime(time_input, "%H:%M:%S").time()
                     break
                 except ValueError:
-                    print("Invalid time format. Please enter time in HH:MM format.")
+                    print("Invalid time format. Please enter time in HH:MM:SS format.")
 
     def set_priority(self):
         while True:
@@ -188,8 +193,11 @@ class ToDo:
                     else:
                         try:
                             new_date = datetime.strptime(new_date_input, "%Y-%m-%d").date()
-                            selected_task.date = new_date
-                            break
+                            if new_date < datetime.now().date():
+                                print("Enter a valid date")
+                            else:
+                                selected_task.date = new_date
+                                break
                         except ValueError:
                             print("Invalid date format. Please enter date in YYYY-MM-DD format.")
                 ToDo.save_tasks_to_txt(tasks)
@@ -199,11 +207,45 @@ class ToDo:
         except ValueError:
             print("Please enter a valid number.")
 
+    def edit_time(self):
+        tasks = ToDo.load_tasks_from_txt()
+        if not tasks:
+            print("No tasks found.")
+            return
+
+        print("\nCurrent Tasks:")
+        idx = 1
+        for task in tasks:
+            print(f"{idx}. {task.task} - Current Time: {task.due_time}")
+            idx += 1
+
+        try:
+            task_number = int(input("\nEnter the number of the task to edit the time: "))
+            if 1 <= task_number <= len(tasks):
+                selected_task = tasks[task_number - 1]
+                while True:
+                    new_time_input = input("Enter the new time (HH:MM:SS): ").strip()
+                    if '|' in new_time_input:
+                        print("Invalid character '|' in time. Please enter again.")
+                    else:
+                        try:
+                            new_time = datetime.strptime(new_time_input, "%H:%M:%S").time()
+                            selected_task.due_time = new_time
+                            break
+                        except ValueError:
+                            print("Invalid time format. Please enter time in HH:MM:SS format.")
+                ToDo.save_tasks_to_txt(tasks)
+                print(f"Time for task '{selected_task.task}' updated successfully.")
+            else:
+                print("Invalid task number.")
+        except ValueError:
+            print("Please enter a valid number.")
+
 def main():
     os.system("cls")
     
     while True:
-        action = input("Enter a command (add, show, edit task, edit date, set, delete, quit): ").strip().lower()
+        action = input("Enter a command (add, show, edit, set, delete, quit): ").strip().lower()
 
         if action == 'add':
             task = ToDo()
@@ -227,14 +269,21 @@ def main():
             else:
                 print("No tasks found.")
 
-        elif action =='edit task':
+        elif action =='edit':
             task = ToDo()
-            task.edit_task()
-        
-        elif action == 'edit date':
-            task = ToDo()
-            task.edit_date()
-    
+            while True:
+                pick = input("Enter what you want to edit (Task, Date, Time): ").lower()
+                if pick == 'task':
+                    task.edit_task()
+                elif pick == 'date':
+                    task.edit_date()
+                elif pick == 'time':
+                    task.edit_time()
+                else:
+                    print("Enter a valid choice!")
+                    continue
+                break
+
         elif action == 'set':
             ToDo.set_is_done()
 
@@ -249,3 +298,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# Function to get the memory usage of the current process
+def get_memory_usage():
+    process = psutil.Process(os.getpid())
+    mem_info = process.memory_info()
+    return mem_info.rss  # in bytes
+
+# Example usage
+print(f"Memory usage: {get_memory_usage() / (1024 * 1024):.2f} MB")
