@@ -1,4 +1,4 @@
-import sys
+mport sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QInputDialog, QMessageBox, QListWidget, QListWidgetItem
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
