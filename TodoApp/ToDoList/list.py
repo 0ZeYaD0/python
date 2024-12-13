@@ -1,6 +1,5 @@
 import os
 from datetime import datetime
-import psutil
 
 file_path = 'list.txt'
 
@@ -298,12 +297,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# Function to get the memory usage of the current process
-def get_memory_usage():
-    process = psutil.Process(os.getpid())
-    mem_info = process.memory_info()
-    return mem_info.rss  # in bytes
-
-# Example usage
-print(f"Memory usage: {get_memory_usage() / (1024 * 1024):.2f} MB")
